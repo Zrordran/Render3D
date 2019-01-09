@@ -2,7 +2,10 @@
 <configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <in>african_head.obj</in>
       <in>main.cpp</in>
+      <in>model.cpp</in>
+      <in>model.h</in>
       <in>tgaimage.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -32,9 +35,21 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>main</executablePath>
+          <cTool>
+            <standard>10</standard>
+          </cTool>
+          <ccTool>
+            <standard>8</standard>
+          </ccTool>
         </makeTool>
       </makefileType>
+      <item path="african_head.obj" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="model.cpp" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="model.h" ex="false" tool="0" flavor2="0">
       </item>
       <item path="tgaimage.cpp" ex="false" tool="0" flavor2="2">
       </item>
