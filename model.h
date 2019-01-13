@@ -13,11 +13,13 @@
 
 class Model {
 private:
-        std::vector<std::string> tab;
+        std::vector<int> tab;
+		std::vector<double> tabPos;
 public:
 	Model(const char *filename);
 	~Model();
-        std::vector<std::string> getTab();
+    std::vector<int> getTab();
+	std::vector<double> getTabPos();
 };
 
 #endif //__MODEL_H__

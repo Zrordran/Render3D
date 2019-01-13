@@ -5,8 +5,8 @@
 const TGAColor white = TGAColor(255, 255, 255, 255);
 const TGAColor red   = TGAColor(255, 0,   0,   255);
 Model *model = NULL;
-const int width  = 800;
-const int height = 800;
+const int width  = 1600;
+const int height = 1600;
 
 void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color) {
     bool steep = false;
@@ -46,21 +46,28 @@ int main(int argc, char** argv) {
     }
 
     TGAImage image(width, height, TGAImage::RGB);
-    for (int i=0; i<model->getTab().size(); i++) {
-        std::cout<<model->getTab()[i]<< '\n'; 
-        //image.set(model->getTab()[i], model->getTab()[i+1], white);
-        i+2;
-        /*
-        std::vector<int> face = model->face(i);
-        for (int j=0; j<3; j++) {
-            Vec3f v0 = model->vert(face[j]);
-            Vec3f v1 = model->vert(face[(j+1)%3]);
-            int x0 = (v0.x+1.)*width/2.;
-            int y0 = (v0.y+1.)*height/2.;
-            int x1 = (v1.x+1.)*width/2.;
-            int y1 = (v1.y+1.)*height/2.;
-            line(x0, y0, x1, y1, image, white);
-        }*/
+	std::cout<< model->getTab().size() << '\n';
+	std::vector<double> pos = model->getTabPos();
+	int v0;
+	int v1;
+	int v2;
+    for (int i=0; i<model->getTab().size(); i = i+3) {
+        //std::cout<<model->getTab()[i]<< '\n'; 
+		//image.set(model->getTab()[i], model->getTab()[i+1], white);
+
+		v0 = (model->getTab()[i]-1)*2;
+		v1 = (model->getTab()[i + 1]-1)*2;
+		v2 = (model->getTab()[i + 2] - 1) * 2;
+		int x0 = (pos.at(v0))*width/2 + width/2;
+		int y0 = (pos.at(v0+1))*height/2 + height/2;
+		int x1 = (pos.at(v1))*width/2 + width/2;
+		int y1 = (pos.at(v1+1))*height/2 + height/2;
+		int x2 = (pos.at(v2))*width/2 + width/2;
+		int y2 = (pos.at(v2 + 1))*height/2 + height/2;
+
+		line(x0, y0, x1, y1, image, white);
+		line(x1, y1, x2, y2, image, white);
+		line(x2, y2, x0, y0, image, white);
     }
 
     image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
