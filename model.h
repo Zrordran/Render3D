@@ -14,7 +14,7 @@
 class Model {
 private:
         std::vector<int> tab;
-		std::vector<double> tabPos;
+	std::vector<double> tabPos;
 public:
 	Model(const char *filename);
 	~Model();

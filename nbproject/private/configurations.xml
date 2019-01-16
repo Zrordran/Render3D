@@ -6,6 +6,8 @@
       <in>main.cpp</in>
       <in>model.cpp</in>
       <in>model.h</in>
+      <in>point.cpp</in>
+      <in>point.h</in>
       <in>tgaimage.cpp</in>
       <in>tgaimage.h</in>
     </df>

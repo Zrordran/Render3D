@@ -6,6 +6,8 @@
       <in>main.cpp</in>
       <in>model.cpp</in>
       <in>model.h</in>
+      <in>point.cpp</in>
+      <in>point.h</in>
       <in>tgaimage.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -50,6 +52,10 @@
       <item path="model.cpp" ex="false" tool="0" flavor2="0">
       </item>
       <item path="model.h" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="point.cpp" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="point.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tgaimage.cpp" ex="false" tool="0" flavor2="2">
       </item>
