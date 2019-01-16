@@ -3,9 +3,10 @@
 #include "point.h"
 
 
-Point::Point(int tx, int ty){
+Point::Point(int tx, int ty, int tz){
     x = tx;
     y = ty;
+    z = tz;
 }
 
 Point::~Point() {
@@ -17,4 +18,8 @@ int Point::getX(){
 
 int Point::getY(){
     return y;
+}
+
+int Point::getZ(){
+    return z;
 }

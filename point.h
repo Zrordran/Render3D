@@ -12,11 +12,13 @@ class Point {
 private:
         int x;
 	int y;
+        int z;
 public:
-	Point(int tx, int ty);
+	Point(int tx, int ty, int tz);
 	~Point();
 	int getX();
 	int getY();
+        int getZ();
 };
 
 #endif	/* POINT_H */

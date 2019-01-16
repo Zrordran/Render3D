@@ -33,6 +33,7 @@ Model::Model(const char *file){
 				if (results[i] == "v") {
 					tabPos.push_back(std::stod(results[i + 1]));
 					tabPos.push_back(std::stod(results[i + 2]));
+					tabPos.push_back(std::stod(results[i + 3]));
 
 					//std::cout << tabPos.at(0) << "-" << tabPos.at(1) << '\n';
 					//tab.push_back(token);
