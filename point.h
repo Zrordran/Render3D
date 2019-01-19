@@ -10,16 +10,24 @@
 
 class Point {
 private:
-        int x;
-	int y;
-        int z;
+	double x;
+	double y;
+	double z;
 public:
-	Point(int tx, int ty, int tz);
+	Point(double tx, double ty, double tz);
 	~Point();
-	int getX();
-	int getY();
-        int getZ();
+	double getX();
+	double getY();
+	double getZ();
+	Point* toRatio(int w, int h);
 };
 
 #endif	/* POINT_H */
+
+ class point
+ {
+ public:
+	 point();
+	 ~point();
+ };
 
