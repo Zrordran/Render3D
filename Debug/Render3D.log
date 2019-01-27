@@ -1,0 +1,33 @@
+﻿  main.cpp
+c:\users\megazord\source\repos\render3d\main.cpp(54): warning C4018: '<' : incompatibilité signed/unsigned
+c:\users\megazord\source\repos\render3d\main.cpp(61): warning C4244: 'initialisation' : conversion de '_Ty' en 'int', perte possible de données
+          with
+          [
+              _Ty=double
+          ]
+c:\users\megazord\source\repos\render3d\main.cpp(62): warning C4244: 'initialisation' : conversion de '_Ty' en 'int', perte possible de données
+          with
+          [
+              _Ty=double
+          ]
+c:\users\megazord\source\repos\render3d\main.cpp(63): warning C4244: 'initialisation' : conversion de '_Ty' en 'int', perte possible de données
+          with
+          [
+              _Ty=double
+          ]
+c:\users\megazord\source\repos\render3d\main.cpp(64): warning C4244: 'initialisation' : conversion de '_Ty' en 'int', perte possible de données
+          with
+          [
+              _Ty=double
+          ]
+c:\users\megazord\source\repos\render3d\main.cpp(65): warning C4244: 'initialisation' : conversion de '_Ty' en 'int', perte possible de données
+          with
+          [
+              _Ty=double
+          ]
+c:\users\megazord\source\repos\render3d\main.cpp(66): warning C4244: 'initialisation' : conversion de '_Ty' en 'int', perte possible de données
+          with
+          [
+              _Ty=double
+          ]
+  Render3D.vcxproj -> C:\Users\MEGAZORD\source\repos\Render3D\Debug\Render3D.exe
