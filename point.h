@@ -10,15 +10,15 @@
 
 class Point {
 private:
-	double x;
-	double y;
-	double z;
+	float x;
+	float y;
+	float z;
 public:
-	Point(double tx, double ty, double tz);
+	Point(float tx, float ty, float tz);
 	~Point();
-	double getX();
-	double getY();
-	double getZ();
+	float getX();
+	float getY();
+	float getZ();
 	Point* toRatio(int w, int h);
 };
 

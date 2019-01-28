@@ -49,19 +49,11 @@ void line(Point* p0,Point* p1, TGAImage &image, TGAColor color) {
 }
 
 Vec3f barycentre(Point* vectors[], Vec3f p) {
-	std::vector<std::vector<float>> s;
-
-	std::vector<float> ss;
-	ss.push_back(vectors[2]->getX() - vectors[0]->getX());
-	ss.push_back(vectors[1]->getX() - vectors[0]->getX());
-	ss.push_back(vectors[0]->getX() - p.x);
-	s.push_back(ss);
-
-	ss.clear();
-	ss.push_back(vectors[2]->getY() - vectors[0]->getY());
-	ss.push_back(vectors[1]->getY() - vectors[0]->getY());
-	ss.push_back(vectors[0]->getY() - p.y);
-	s.push_back(ss);
+	Vec3f s[2];
+	Vec3f tmp(vectors[2]->getX() - vectors[0]->getX(), vectors[1]->getX() - vectors[0]->getX(), vectors[0]->getX() - p.x);
+	s[0] = tmp;
+	Vec3f tmp2(vectors[2]->getY() - vectors[0]->getY(), vectors[1]->getY() - vectors[0]->getY(), vectors[0]->getY() - p.y);
+	s[1] = tmp2;
 
 	float u[3]; //cross product entre s[0] et s[1]
 	u[0] = s[0][1] * s[1][2] - s[0][2] * s[1][1];
@@ -165,13 +157,10 @@ int mainOLD(int argc, char** argv) {
     }
 
     TGAImage image(width, height, TGAImage::RGB);
-	std::vector<double> pos = model->getTabPos();
+	std::vector<float> pos = model->getTabPos();
 	int v0;
 	int v1;
 	int v2;
-        Point* v;
-        Point* w;
-        Point* n;
 		Point* p0;
 		Point* p1;
 		Point* p2;
@@ -186,16 +175,16 @@ int mainOLD(int argc, char** argv) {
                 p1 = new Point((pos.at(v1)),(pos.at(v1+1)),pos.at(v1+2));
                 p2 = new Point((pos.at(v2)),(pos.at(v2+1)),pos.at(v2+2));
                 
-                v = new Point(p1->getX()-p0->getX(),p1->getY()-p0->getY(),p1->getZ()-p0->getZ());
-                w = new Point(p2->getX()-p1->getX(),p2->getY()-p1->getY(),p2->getZ()-p1->getZ());
+                Vec3f v(p1->getX()-p0->getX(),p1->getY()-p0->getY(),p1->getZ()-p0->getZ());
+                Vec3f w(p2->getX()-p1->getX(),p2->getY()-p1->getY(),p2->getZ()-p1->getZ());
 
 				//Cross product
-				surfaceNormale.x = (v->getY()*w->getZ())-(v->getZ()*w->getY());
-				surfaceNormale.y = (v->getZ()*w->getX())-(v->getX()*w->getZ());
-				surfaceNormale.z = (v->getX()*w->getY())-(v->getY()*w->getX());
+				surfaceNormale.x = (v.y*w.z)-(v.z*w.y);
+				surfaceNormale.y = (v.z*w.x)-(v.x*w.z);
+				surfaceNormale.z = (v.x*w.y)-(v.y*w.x);
 
 				//Calculate norme :
-				double norme = sqrtl(surfaceNormale.x * surfaceNormale.x + surfaceNormale.y * surfaceNormale.y + surfaceNormale.z * surfaceNormale.z);
+				float norme = sqrtl(surfaceNormale.x * surfaceNormale.x + surfaceNormale.y * surfaceNormale.y + surfaceNormale.z * surfaceNormale.z);
 				surfaceNormale.x = surfaceNormale.x / norme;
 				surfaceNormale.y = surfaceNormale.y / norme;
 				surfaceNormale.z = surfaceNormale.z / norme;
@@ -225,7 +214,7 @@ int main(int argc, char** argv) {
 		zbuffer[i] = -std::numeric_limits<float>::max();
 	}
 
-	std::vector<double> pos = model->getTabPos();
+	std::vector<float> pos = model->getTabPos();
 	int v0;
 	int v1;
 	int v2;

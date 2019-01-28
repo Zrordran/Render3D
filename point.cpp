@@ -3,7 +3,7 @@
 #include "point.h"
 
 
-Point::Point(double tx, double ty, double tz){
+Point::Point(float tx, float ty, float tz){
     x = tx;
     y = ty;
     z = tz;
@@ -17,15 +17,15 @@ Point* Point::toRatio(int w, int h) {
 	return p;
 }
 
-double Point::getX(){
+float Point::getX(){
     return x;
 }
 
-double Point::getY(){
+float Point::getY(){
     return y;
 }
 
-double Point::getZ(){
+float Point::getZ(){
     return z;
 }
 

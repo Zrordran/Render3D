@@ -57,6 +57,6 @@ std::vector<int> Model::getTab(){
     return tab;
 }
 
-std::vector<double> Model::getTabPos() {
+std::vector<float> Model::getTabPos() {
 	return tabPos;
 }

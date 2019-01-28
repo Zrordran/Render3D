@@ -14,12 +14,12 @@
 class Model {
 private:
         std::vector<int> tab;
-	std::vector<double> tabPos;
+	std::vector<float> tabPos;
 public:
 	Model(const char *filename);
 	~Model();
     std::vector<int> getTab();
-	std::vector<double> getTabPos();
+	std::vector<float> getTabPos();
 };
 
 #endif //__MODEL_H__
