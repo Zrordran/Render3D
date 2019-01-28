@@ -3,6 +3,7 @@
 #include "model.h"
 #include "point.h"
 #include "math.h"
+#include "geometry.h"
 #include <algorithm>
 #include <time.h>
 
@@ -47,19 +48,19 @@ void line(Point* p0,Point* p1, TGAImage &image, TGAColor color) {
     }
 }
 
-std::vector<float> barycentre(Point* vectors[], int p[]) {
+Vec3f barycentre(Point* vectors[], Vec3f p) {
 	std::vector<std::vector<float>> s;
 
 	std::vector<float> ss;
 	ss.push_back(vectors[2]->getX() - vectors[0]->getX());
 	ss.push_back(vectors[1]->getX() - vectors[0]->getX());
-	ss.push_back(vectors[0]->getX() - p[0]);
+	ss.push_back(vectors[0]->getX() - p.x);
 	s.push_back(ss);
 
 	ss.clear();
 	ss.push_back(vectors[2]->getY() - vectors[0]->getY());
 	ss.push_back(vectors[1]->getY() - vectors[0]->getY());
-	ss.push_back(vectors[0]->getY() - p[1]);
+	ss.push_back(vectors[0]->getY() - p.y);
 	s.push_back(ss);
 
 	float u[3]; //cross product entre s[0] et s[1]
@@ -68,11 +69,11 @@ std::vector<float> barycentre(Point* vectors[], int p[]) {
 	u[2] = s[0][0] * s[1][1] - s[0][1] * s[1][0];
 
 	if (std::abs(u[2]) > 1e-2) { // dont forget that u[2] is integer. If it is zero then triangle ABC is degenerate
-		std::vector<float> barycentre = { 1.f - (u[0] + u[1]) / u[2] ,u[1] / u[2],u[0] / u[2] };
+		Vec3f barycentre = { 1.f - (u[0] + u[1]) / u[2] ,u[1] / u[2],u[0] / u[2] };
 		return barycentre;
 	}
 	else {
-		std::vector<float> barycentre = { -1,1,1 };
+		Vec3f barycentre = { -1,1,1 };
 		return barycentre;
 	}
 }
@@ -118,9 +119,9 @@ void triangleV1(Point* p0,Point* p1,Point* p2, TGAImage &image, TGAColor color) 
 
 void triangleV2(Point* p0, Point* p1, Point* p2, float *zbuffer, TGAImage &image, TGAColor color) {
 	
-	float bboxmin[2] = { std::numeric_limits<float>::max(),  std::numeric_limits<float>::max() };
-	float bboxmax[2] = {-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() };
-	float clamp[2] = { width - 1, height - 1 };
+	Vec2f bboxmin(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max() );
+	Vec2f bboxmax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() );
+	Vec2f clamp(width - 1, height - 1 );
 	Point *vectors[3];
 	vectors[0] = p0; vectors[1] = p1; vectors[2] = p2;
 
@@ -131,25 +132,26 @@ void triangleV2(Point* p0, Point* p1, Point* p2, float *zbuffer, TGAImage &image
 		bboxmax[1] = std::min(clamp[1], std::max(bboxmax[1], (float)vectors[i]->getY()));
 	}
 
-	int p[3];
+	Vec3f p;
+	Vec3f barycen;
 //clock_t begin = clock();
-	for (p[0] = bboxmin[0]; p[0] <= bboxmax[0]; p[0]++) {
-		for (p[1] = bboxmin[1]; p[1] <= bboxmax[1]; p[1]++) {	
-			std::vector<float> barycen = barycentre(vectors, p);	
-			if (barycen[0] < 0 || barycen[1] < 0 || barycen[2] < 0) {
+	for (p.x = bboxmin[0]; p.x <= bboxmax[0]; p[0]++) {
+		for (p.y = bboxmin[1]; p.y <= bboxmax[1]; p[1]++) {
+			barycen = barycentre(vectors, p);	
+			if (barycen.x < 0 || barycen.y < 0 || barycen.z < 0) {
 				continue;
 			}
-			p[2] = 0;
+			p.z = 0;
 			for (int i = 0; i < 3; i++) {
-				p[2] += vectors[i]->getZ() * barycen[i];
+				p.z += vectors[i]->getZ() * barycen[i];
 			}
-			if (zbuffer[int(p[0] + p[1] * width)] < p[2]) {
-				zbuffer[int(p[0] + p[1] * width)] = p[2];
-				image.set(p[0], p[1], color);
+			if (zbuffer[int(p.x + p.y * width)] < p.z) {
+				zbuffer[int(p.x + p.y * width)] = p.z;
+				image.set(p.x, p.y, color);
 			}
 		}
 	}
-	//		clock_t end = clock();
+//		clock_t end = clock();
 	//std::cout << (double)(end - begin) / CLOCKS_PER_SEC << std::endl;
 
 
@@ -173,8 +175,10 @@ int mainOLD(int argc, char** argv) {
 		Point* p0;
 		Point* p1;
 		Point* p2;
+		Vec3f surfaceNormale;
         double intensite;
         for (int i=0; i<model->getTab().size(); i = i+3) {
+
 				v0 = (model->getTab()[i]-1)*3;
 				v1 = (model->getTab()[i + 1]-1)*3;
 				v2 = (model->getTab()[i + 2]-1) * 3;
@@ -186,18 +190,17 @@ int mainOLD(int argc, char** argv) {
                 w = new Point(p2->getX()-p1->getX(),p2->getY()-p1->getY(),p2->getZ()-p1->getZ());
 
 				//Cross product
-				double surfaceNormale[3];
-				surfaceNormale[0] = (v->getY()*w->getZ())-(v->getZ()*w->getY());
-				surfaceNormale[1] = (v->getZ()*w->getX())-(v->getX()*w->getZ());
-				surfaceNormale[2] = (v->getX()*w->getY())-(v->getY()*w->getX());
+				surfaceNormale.x = (v->getY()*w->getZ())-(v->getZ()*w->getY());
+				surfaceNormale.y = (v->getZ()*w->getX())-(v->getX()*w->getZ());
+				surfaceNormale.z = (v->getX()*w->getY())-(v->getY()*w->getX());
 
 				//Calculate norme :
-				double norme = sqrtl(surfaceNormale[0] * surfaceNormale[0] + surfaceNormale[1] * surfaceNormale[1] + surfaceNormale[2] * surfaceNormale[2]);
-				surfaceNormale[0] = surfaceNormale[0] / norme;
-				surfaceNormale[1] = surfaceNormale[1] / norme;
-				surfaceNormale[2] = surfaceNormale[2] / norme;
+				double norme = sqrtl(surfaceNormale.x * surfaceNormale.x + surfaceNormale.y * surfaceNormale.y + surfaceNormale.z * surfaceNormale.z);
+				surfaceNormale.x = surfaceNormale.x / norme;
+				surfaceNormale.y = surfaceNormale.y / norme;
+				surfaceNormale.z = surfaceNormale.z / norme;
 
-                intensite = surfaceNormale[0]*light->getX() + surfaceNormale[1]*light->getY()+ surfaceNormale[2]*light->getZ();
+                intensite = surfaceNormale.x*light->getX() + surfaceNormale.y*light->getY()+ surfaceNormale.z*light->getZ();
 
                 if(intensite >0) triangleV1(p0->toRatio(width,height), p1->toRatio(width, height),p2->toRatio(width, height), image,  TGAColor(intensite*255, intensite*255, intensite*255, 255));
     }
@@ -260,7 +263,6 @@ int main(int argc, char** argv) {
 
 		if (intensite > 0) triangleV2(p0->toRatio(width, height), p1->toRatio(width, height), p2->toRatio(width, height), zbuffer, image, TGAColor(intensite * 255, intensite * 255, intensite * 255, 255));
 	}
-
 	image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
 	image.write_tga_file("output.tga");
 	delete model;
