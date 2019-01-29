@@ -71,12 +71,12 @@ Vec3f barycentre(Point* vectors[], Vec3f p) {
 }
 
 void triangleV1(Point* p0,Point* p1,Point* p2, TGAImage &image, TGAColor color) {
-    
-    if (p0->getY() >p1->getY()) std::swap(p0, p1); 
-    if (p0->getY() >p2->getY()) std::swap(p0, p2); 
-    if (p1->getY() >p2->getY()) std::swap(p1, p2); 
 
-    int total_height = p2->getY()-p0->getY(); 
+    if (p0->getY() >p1->getY()) std::swap(p0, p1);
+    if (p0->getY() >p2->getY()) std::swap(p0, p2);
+    if (p1->getY() >p2->getY()) std::swap(p1, p2);
+
+    int total_height = p2->getY()-p0->getY();
     if(total_height != 0){
         for (int y=p0->getY(); y< p2->getY(); y++) {
             bool moitie = y < p1->getY() ;
@@ -85,7 +85,7 @@ void triangleV1(Point* p0,Point* p1,Point* p2, TGAImage &image, TGAColor color) 
                 segment_height = p1->getY()-p0->getY();
             }else{
                 segment_height = p2->getY()-p1->getY();
-            } 
+            }
 			double a = (double)(y-p0->getY())/total_height;
 			double b;
 			int aBis = p0->getX() + (p2->getX()-p0->getX())*a;
@@ -95,22 +95,22 @@ void triangleV1(Point* p0,Point* p1,Point* p2, TGAImage &image, TGAColor color) 
                 bBis = p0->getX() + (p1->getX()-p0->getX())*b;
             }else{
                 b = (double)(y-p1->getY())/segment_height;
-                bBis = p1->getX() + (p2->getX()-p1->getX())*b; 
-            } 
-            if (aBis>bBis) std::swap(aBis, bBis); 
+                bBis = p1->getX() + (p2->getX()-p1->getX())*b;
+            }
+            if (aBis>bBis) std::swap(aBis, bBis);
             for (int i=aBis; i<=bBis; i++) {
                 image.set(i, y, color);
-            } 
+            }
         }
     }else{
         line(p0,p1,image,color);
         line(p1,p2,image,color);
         line(p0,p2,image,color);
-    } 
+    }
 }
 
 void triangleV2(Point* p0, Point* p1, Point* p2, float *zbuffer, TGAImage &image, TGAColor color) {
-	
+
 	Vec2f bboxmin(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max() );
 	Vec2f bboxmax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() );
 	Vec2f clamp(width - 1, height - 1 );
@@ -129,7 +129,7 @@ void triangleV2(Point* p0, Point* p1, Point* p2, float *zbuffer, TGAImage &image
 //clock_t begin = clock();
 	for (p.x = bboxmin[0]; p.x <= bboxmax[0]; p[0]++) {
 		for (p.y = bboxmin[1]; p.y <= bboxmax[1]; p[1]++) {
-			barycen = barycentre(vectors, p);	
+			barycen = barycentre(vectors, p);
 			if (barycen.x < 0 || barycen.y < 0 || barycen.z < 0) {
 				continue;
 			}
@@ -174,7 +174,7 @@ int mainOLD(int argc, char** argv) {
 				p0 = new Point((pos.at(v0)),(pos.at(v0+1)),pos.at(v0+2));
                 p1 = new Point((pos.at(v1)),(pos.at(v1+1)),pos.at(v1+2));
                 p2 = new Point((pos.at(v2)),(pos.at(v2+1)),pos.at(v2+2));
-                
+
                 Vec3f v(p1->getX()-p0->getX(),p1->getY()-p0->getY(),p1->getZ()-p0->getZ());
                 Vec3f w(p2->getX()-p1->getX(),p2->getY()-p1->getY(),p2->getZ()-p1->getZ());
 

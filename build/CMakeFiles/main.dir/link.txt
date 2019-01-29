@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -pedantic -std=c++11 -O3 -fopenmp  -rdynamic CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/model.cpp.o CMakeFiles/main.dir/point.cpp.o CMakeFiles/main.dir/tgaimage.cpp.o  -o main 
