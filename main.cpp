@@ -70,50 +70,11 @@ Vec3f barycentre(Point* vectors[], Vec3f p) {
 	}
 }
 
-void triangleV1(Point* p0,Point* p1,Point* p2, TGAImage &image, TGAColor color) {
-
-    if (p0->getY() >p1->getY()) std::swap(p0, p1);
-    if (p0->getY() >p2->getY()) std::swap(p0, p2);
-    if (p1->getY() >p2->getY()) std::swap(p1, p2);
-
-    int total_height = p2->getY()-p0->getY();
-    if(total_height != 0){
-        for (int y=p0->getY(); y< p2->getY(); y++) {
-            bool moitie = y < p1->getY() ;
-			int segment_height;
-            if(moitie){
-                segment_height = p1->getY()-p0->getY();
-            }else{
-                segment_height = p2->getY()-p1->getY();
-            }
-			double a = (double)(y-p0->getY())/total_height;
-			double b;
-			int aBis = p0->getX() + (p2->getX()-p0->getX())*a;
-			int bBis;
-            if(moitie){
-                b = (double)(y-p0->getY())/segment_height;
-                bBis = p0->getX() + (p1->getX()-p0->getX())*b;
-            }else{
-                b = (double)(y-p1->getY())/segment_height;
-                bBis = p1->getX() + (p2->getX()-p1->getX())*b;
-            }
-            if (aBis>bBis) std::swap(aBis, bBis);
-            for (int i=aBis; i<=bBis; i++) {
-                image.set(i, y, color);
-            }
-        }
-    }else{
-        line(p0,p1,image,color);
-        line(p1,p2,image,color);
-        line(p0,p2,image,color);
-    }
-}
-
 void triangleV2(Point* p0, Point* p1, Point* p2, float *zbuffer, TGAImage &image, TGAColor color) {
 
-	Vec2f bboxmin(std::numeric_limits<float>::max(),  std::numeric_limits<float>::max() );
-	Vec2f bboxmax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() );
-	Vec2f clamp(width - 1, height - 1 );
+	Vec2f bboxmin(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+	Vec2f bboxmax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+	Vec2f clamp(width - 1, height - 1);
 	Point *vectors[3];
 	vectors[0] = p0; vectors[1] = p1; vectors[2] = p2;
 
@@ -126,7 +87,6 @@ void triangleV2(Point* p0, Point* p1, Point* p2, float *zbuffer, TGAImage &image
 
 	Vec3f p;
 	Vec3f barycen;
-//clock_t begin = clock();
 	for (p.x = bboxmin[0]; p.x <= bboxmax[0]; p[0]++) {
 		for (p.y = bboxmin[1]; p.y <= bboxmax[1]; p[1]++) {
 			barycen = barycentre(vectors, p);
@@ -143,61 +103,6 @@ void triangleV2(Point* p0, Point* p1, Point* p2, float *zbuffer, TGAImage &image
 			}
 		}
 	}
-//		clock_t end = clock();
-	//std::cout << (double)(end - begin) / CLOCKS_PER_SEC << std::endl;
-
-
-}
-
-int mainOLD(int argc, char** argv) {
-    if (2==argc) {
-        model = new Model(argv[1]);
-    } else {
-        model = new Model("african_head.obj");
-    }
-
-    TGAImage image(width, height, TGAImage::RGB);
-	std::vector<float> pos = model->getTabPos();
-	int v0;
-	int v1;
-	int v2;
-		Point* p0;
-		Point* p1;
-		Point* p2;
-		Vec3f surfaceNormale;
-        double intensite;
-        for (int i=0; i<model->getTab().size(); i = i+3) {
-
-				v0 = (model->getTab()[i]-1)*3;
-				v1 = (model->getTab()[i + 1]-1)*3;
-				v2 = (model->getTab()[i + 2]-1) * 3;
-				p0 = new Point((pos.at(v0)),(pos.at(v0+1)),pos.at(v0+2));
-                p1 = new Point((pos.at(v1)),(pos.at(v1+1)),pos.at(v1+2));
-                p2 = new Point((pos.at(v2)),(pos.at(v2+1)),pos.at(v2+2));
-
-                Vec3f v(p1->getX()-p0->getX(),p1->getY()-p0->getY(),p1->getZ()-p0->getZ());
-                Vec3f w(p2->getX()-p1->getX(),p2->getY()-p1->getY(),p2->getZ()-p1->getZ());
-
-				//Cross product
-				surfaceNormale.x = (v.y*w.z)-(v.z*w.y);
-				surfaceNormale.y = (v.z*w.x)-(v.x*w.z);
-				surfaceNormale.z = (v.x*w.y)-(v.y*w.x);
-
-				//Calculate norme :
-				float norme = sqrtl(surfaceNormale.x * surfaceNormale.x + surfaceNormale.y * surfaceNormale.y + surfaceNormale.z * surfaceNormale.z);
-				surfaceNormale.x = surfaceNormale.x / norme;
-				surfaceNormale.y = surfaceNormale.y / norme;
-				surfaceNormale.z = surfaceNormale.z / norme;
-
-                intensite = surfaceNormale.x*light->getX() + surfaceNormale.y*light->getY()+ surfaceNormale.z*light->getZ();
-
-                if(intensite >0) triangleV1(p0->toRatio(width,height), p1->toRatio(width, height),p2->toRatio(width, height), image,  TGAColor(intensite*255, intensite*255, intensite*255, 255));
-    }
-
-    image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
-    image.write_tga_file("output.tga");
-    delete model;
-    return 0;
 }
 
 int main(int argc, char** argv) {
